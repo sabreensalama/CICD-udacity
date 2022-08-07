@@ -18,19 +18,32 @@ commands:
             aws cloudformation delete-stack --stack-name myStack-7b47a
 
 jobs:
-  # Exercise - Rollback
-  create_infrastructure: 
+  create_cloudfront:
     docker:
       - image: amazon/aws-cli
     steps:
       - checkout
       - run:
-          name: Create Cloudformation Stack
+          name: Execute bucket.yml - Create Cloudformation Stack
           command: |
             aws cloudformation deploy \
-              --template-file template.yml \
-              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
-              --region us-east-1
+            --template-file cloudfront.yml \
+            --stack-name production-distro \
+            --parameter-overrides PipelineID="mmy-bucket-10" \ # Name of the S3 bucket you created manually.
+            --tags project=udapeople &
+  # Exercise - Rollback
+#   create_infrastructure: 
+#     docker:
+#       - image: amazon/aws-cli
+#     steps:
+#       - checkout
+#       - run:
+#           name: Create Cloudformation Stack
+#           command: |
+#             aws cloudformation deploy \
+#               --template-file template.yml \
+#               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+#               --region us-east-1
 #    # Exercise: Config and Deployment
 #   configure_infrastructure: 
 #     docker:
@@ -49,23 +62,23 @@ jobs:
 #           command: |
 
 #             ansible-playbook -i inventory.txt main4.yml
-  smoke_test:
-    docker:
-      - image: alpine:latest
-    steps:
-      - run: apk add --update curl aws-cli
-      - run:
-          name: smoke test
-          command: |
-            URL="http://44.197.208.24:3000"
-            # Test if website exists
-            if curl -s --head ${URL} 
-            then
-              return 0
-            else
-              return 1
-            fi
-      - destroy_environment           
+#   smoke_test:
+#     docker:
+#       - image: alpine:latest
+#     steps:
+#       - run: apk add --update curl aws-cli
+#       - run:
+#           name: smoke test
+#           command: |
+#             URL="http://44.197.208.24:3000"
+#             # Test if website exists
+#             if curl -s --head ${URL} 
+#             then
+#               return 0
+#             else
+#               return 1
+#             fi
+#       - destroy_environment           
 
 
 
@@ -74,7 +87,7 @@ workflows:
   my_workflow:
     # Run the welcome/run job in its own container
     jobs:
-      - smoke_test
+      - create_cloudfront
 
 #           requires:
 #             -  configure_infrastructure
