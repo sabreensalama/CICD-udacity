@@ -18,7 +18,19 @@ commands:
             aws cloudformation delete-stack --stack-name myStack-7b47a
 
 jobs:
-  create_cloudfront:
+#   create_cloudfront:
+#     docker:
+#       - image: amazon/aws-cli
+#     steps:
+#       - checkout
+#       - run:
+#           name: Execute bucket.yml - Create Cloudformation Stack
+#           command: |
+#             aws cloudformation deploy \
+#             --template-file cloudfront.yml \
+#             --stack-name production-distro \
+#             --parameter-overrides PipelineID=mmy-bucket-10
+   create_and_deploy_front_end:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -27,9 +39,9 @@ jobs:
           name: Execute bucket.yml - Create Cloudformation Stack
           command: |
             aws cloudformation deploy \
-            --template-file cloudfront.yml \
-            --stack-name production-distro \
-            --parameter-overrides PipelineID=mmy-bucket-10
+            --template-file bucket.yml \
+            --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
+            --parameter-overrides MyBucketName="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
   # Exercise - Rollback
 #   create_infrastructure: 
 #     docker:
@@ -86,7 +98,7 @@ workflows:
   my_workflow:
     # Run the welcome/run job in its own container
     jobs:
-      - create_cloudfront
+      - create_and_deploy_front_end
 
 #           requires:
 #             -  configure_infrastructure
