@@ -10,18 +10,18 @@ orbs:
 
 jobs:
   # Exercise - Rollback
-#   create_infrastructure: 
-#     docker:
-#       - image: amazon/aws-cli
-#     steps:
-#       - checkout
-#       - run:
-#           name: Create Cloudformation Stack
-#           command: |
-#             aws cloudformation deploy \
-#               --template-file template.yml \
-#               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
-#               --region us-east-1
+  create_infrastructure: 
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Create Cloudformation Stack
+          command: |
+            aws cloudformation deploy \
+              --template-file template.yml \
+              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+              --region us-east-1
 #    # Exercise: Config and Deployment
 #   configure_infrastructure: 
 #     docker:
@@ -40,22 +40,22 @@ jobs:
 #           command: |
 
 #             ansible-playbook -i inventory.txt main4.yml
-  smoke_test:
-    docker:
-      - image: alpine:latest
-    steps:
-      - run: apk add --update curl
-      - run:
-          name: smoke test
-          command: |
-            URL="https://blog.udacity.com/"
-            # Test if website exists
-            if curl -s --head ${URL} 
-            then
-              return 0
-            else
-              return 1
-            fi
+#   smoke_test:
+#     docker:
+#       - image: alpine:latest
+#     steps:
+#       - run: apk add --update curl
+#       - run:
+#           name: smoke test
+#           command: |
+#             URL="http://127.0.0.01:3000"
+#             # Test if website exists
+#             if curl -s --head ${URL} 
+#             then
+#               return 0
+#             else
+#               return 1
+#             fi
 
 
 
@@ -64,8 +64,8 @@ workflows:
   my_workflow:
     # Run the welcome/run job in its own container
     jobs:
-     - smoke_test
-#       - create_infrastructure:
+#      - smoke_test
+      - create_infrastructure
 #           requires:
 #             -  configure_infrastructure
 
