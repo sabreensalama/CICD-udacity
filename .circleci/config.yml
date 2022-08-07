@@ -7,7 +7,7 @@ orbs:
 # Orchestrate or schedule a set of jobs
           
 commands:
-    destroy_environment:
+   destroy_environment:
     steps:
       - run:
           name: Destroy environment
