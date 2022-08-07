@@ -29,7 +29,7 @@ jobs:
             aws cloudformation deploy \
             --template-file cloudfront.yml \
             --stack-name production-distro \
-            --tags project=udapeople
+            --parameter-overrides PipelineID=mmy-bucket-10
   # Exercise - Rollback
 #   create_infrastructure: 
 #     docker:
