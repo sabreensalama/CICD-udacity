@@ -55,18 +55,19 @@ jobs:
             --stack-name production-distro \
             --parameter-overrides PipelineID="mybucket-${CIRCLE_WORKFLOW_ID:0:7}" 
   # Exercise - Rollback
-#   create_infrastructure: 
-#     docker:
-#       - image: amazon/aws-cli
-#     steps:
-#       - checkout
-#       - run:
-#           name: Create Cloudformation Stack
-#           command: |
-#             aws cloudformation deploy \
-#               --template-file template.yml \
-#               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
-#               --region us-east-1
+  create_infrastructure: 
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Create Cloudformation Stack
+          command: |
+            aws cloudformation deploy \
+              --template-file template.yml \
+              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+              --region us-east-1
+              
 #    # Exercise: Config and Deployment
 #   configure_infrastructure: 
 #     docker:
@@ -110,7 +111,7 @@ workflows:
   my_workflow:
     # Run the welcome/run job in its own container
     jobs:
-      -   promote_to_production
+      -   create_infrastructure
 
 #           requires:
 #             -  configure_infrastructure
