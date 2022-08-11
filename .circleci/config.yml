@@ -32,7 +32,7 @@ jobs:
 #             --parameter-overrides PipelineID=mmy-bucket-10
             
             
-   create_and_deploy_front_end:
+  create_and_deploy_front_end:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -45,18 +45,18 @@ jobs:
             --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
             --parameter-overrides MyBucketName="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
             
-  promote_to_production:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          name: Execute cloudfront.yml
-          command: |
-            aws cloudformation deploy \
-            --template-file cloudfront.yml \
-            --stack-name production-distro \
-            --parameter-overrides PipelineID="mybucket-${CIRCLE_WORKFLOW_ID:0:7}" 
+#   promote_to_production:
+#     docker:
+#       - image: amazon/aws-cli
+#     steps:
+#       - checkout
+#       - run:
+#           name: Execute cloudfront.yml
+#           command: |
+#             aws cloudformation deploy \
+#             --template-file cloudfront.yml \
+#             --stack-name production-distro \
+#             --parameter-overrides PipelineID="mybucket-${CIRCLE_WORKFLOW_ID:0:7}" 
   # Exercise - Rollback
 #   create_infrastructure: 
 #     docker:
