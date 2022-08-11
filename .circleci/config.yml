@@ -18,19 +18,7 @@ commands:
             aws cloudformation delete-stack --stack-name myStack-befc9
 
 jobs:
-  create_cloudfront:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          name: Execute bucket.yml - Create Cloudformation Stack
-          command: |
-            aws cloudformation deploy \
-            --template-file cloudfront.yml \
-            --stack-name production-distro \
-            --parameter-overrides PipelineID=mmy-bucket-10
-#    create_and_deploy_front_end:
+#   create_cloudfront:
 #     docker:
 #       - image: amazon/aws-cli
 #     steps:
@@ -39,9 +27,24 @@ jobs:
 #           name: Execute bucket.yml - Create Cloudformation Stack
 #           command: |
 #             aws cloudformation deploy \
-#             --template-file bucket.yml \
-#             --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
-#             --parameter-overrides MyBucketName="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
+#             --template-file cloudfront.yml \
+#             --stack-name production-distro \
+#             --parameter-overrides PipelineID=mmy-bucket-10
+            
+            
+   create_and_deploy_front_end:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Execute bucket.yml - Create Cloudformation Stack
+          command: |
+            aws cloudformation deploy \
+            --template-file bucket.yml \
+            --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
+            --parameter-overrides MyBucketName="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
+            
   promote_to_production:
     docker:
       - image: amazon/aws-cli
@@ -111,7 +114,7 @@ workflows:
   my_workflow:
     # Run the welcome/run job in its own container
     jobs:
-      -  create_cloudfront
+      -  create_and_deploy_front_end
 
 #           requires:
 #             -  configure_infrastructure
