@@ -3,20 +3,44 @@ jobs:
 
   # Exercise: Infrastructure Creation
   # Exercise - Rollback
-  create_infrastructure: 
+#   create_infrastructure: 
+#     docker:
+#       - image: amazon/aws-cli
+#     steps:
+#       - checkout
+#       - run:
+#           name: Create Cloudformation Stack
+#           command: |
+#             aws cloudformation deploy \
+#               --template-file template.yml \
+#               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+#               --region us-east-1
+  configure_infrastructure: 
     docker:
-      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints: ["86:0f:92:55:c3:eb:65:5c:e2:d7:f7:e3:0e:eb:df:2b"] # You can get this ID in the section where you registered the SSH Key
       - run:
-          name: Create Cloudformation Stack
+          name: Install dependencies
           command: |
-            aws cloudformation deploy \
-              --template-file template.yml \
-              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
-              --region us-east-1
+            # install the dependencies needed for your playbook
+            apk add --update ansible 
+      - run:
+          name: get machine ip
+          command: |
+            aws ec2 describe-instances \
+                  --query 'Reservations[*].Instances[*].PublicIpAddress' \
+                --filters "Name=tag:name,Values=ansible" \
+                --output text >> inventory
+ 
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook -i inventory.txt main4.yml
 workflows:
   # Name the workflow "welcome"
   my_workflow:
    jobs:
-    - create_infrastructure
+    - configure_infrastructure
