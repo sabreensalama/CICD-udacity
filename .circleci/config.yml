@@ -18,4 +18,5 @@ jobs:
 workflows:
   # Name the workflow "welcome"
   my_workflow:
-   - create_infrastructure
+   jobs:
+    - create_infrastructure
