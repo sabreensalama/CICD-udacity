@@ -35,7 +35,7 @@ jobs:
                   --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --filters "Name=tag:name,Values=ansible" \
                 --output text > inventory.txt
-            cat inventory
+            cat inventory.txt
  
       - run:
           name: Configure server
