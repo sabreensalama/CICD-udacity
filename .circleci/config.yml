@@ -26,7 +26,8 @@ jobs:
           name: Install dependencies
           command: |
             # install the dependencies needed for your playbook
-            apk add --update awscli ansible 
+            apk add --update ansible 
+            pip3 install awscli
       - run:
           name: get machine ip
           command: |
