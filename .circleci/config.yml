@@ -34,7 +34,7 @@ jobs:
             aws ec2 describe-instances \
                   --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --filters "Name=tag:name,Values=ansible" \
-                --output text >> inventory
+                --output text > inventory
             cat inventory
  
       - run:
